@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessible Photo Gallery</title>
+<style>
+  body {
+    margin: 0;
+    padding: 24px;
+    font-family: Georgia, "Times New Roman", serif;
+    background: #f2efe9;
+    color: #1f1f1f;
+    text-align: center;
+  }
+
+  h1 { margin: 0 0 8px; font-weight: normal; }
+  p.intro { margin: 0 0 20px; }
+
+  /* Large preview area: the selected photo appears here as a background image */
+  #image {
+    width: 100%;
+    max-width: 640px;
+    height: 360px;
+    margin: 0 auto 24px;
+    border: 3px solid #1f1f1f;
+    background-color: #dcd6c8;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 1.1rem;
+  }
+
+  #image span {
+    width: 100%;
+    padding: 10px;
+    background: #000000;
+    color: #ffffff;
+  }
+
+  #image.empty { align-items: center; }
+  #image.empty span { background: none; color: #1f1f1f; }
+
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  figure {
+    margin: 0;
+    width: 150px;
+    padding: 6px;
+    border: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  /* Visible focus ring for keyboard users */
+  figure:hover,
+  figure:focus { border-color: #1f1f1f; outline: 3px solid #0b57d0; outline-offset: 2px; }
+
+  figure img {
+    display: block;
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  figcaption { margin-top: 6px; font-size: 0.9rem; }
+</style>
+</head>
+<body onload="addTabIndex()">
+
+  <main>
+    <h1>Photo Gallery</h1>
+    <p class="intro">Hover over a photo, or press Tab to move through them, to see it larger.</p>
+
+    <!-- aria-live makes screen readers announce the caption when it changes -->
+    <div id="image" class="empty" aria-live="polite"><span>Select an image below to display here.</span></div>
+
+    <!-- Replace each src and alt with your own photo and description.
+         tabindex is added to every figure by addTabIndex() when the page loads. -->
+    <div class="gallery">
+      <figure onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()">
+        <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='640' height='360' fill='%23c4572e'/%3E%3C/svg%3E"
+             alt="A warm orange sunset">
+        <figcaption>Sunset</figcaption>
+      </figure>
+
+      <figure onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()">
+        <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='640' height='360' fill='%232f6f5e'/%3E%3C/svg%3E"
+             alt="A deep green forest">
+        <figcaption>Forest</figcaption>
+      </figure>
+
+      <figure onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()">
+        <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='640' height='360' fill='%23264b86'/%3E%3C/svg%3E"
+             alt="A calm blue ocean">
+        <figcaption>Ocean</figcaption>
+      </figure>
+
+      <figure onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()">
+        <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='640' height='360' fill='%237a4b8f'/%3E%3C/svg%3E"
+             alt="A purple evening sky">
+        <figcaption>Evening sky</figcaption>
+      </figure>
+
+      <figure onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()">
+        <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='640' height='360' fill='%23b8962e'/%3E%3C/svg%3E"
+             alt="A golden wheat field">
+        <figcaption>Wheat field</figcaption>
+      </figure>
+    </div>
+  </main>
+
+<script>
+  // Runs when the page loads (body onload).
+  // Adds tabindex="0" to every figure so keyboard users can Tab to each one.
+  function addTabIndex() {
+    var figures = document.getElementsByTagName("figure");
+    for (var i = 0; i < figures.length; i++) {
+      figures[i].setAttribute("tabindex", "0");
+    }
+  }
+
+  // Runs on mouseover and on focus.
+  // figureEl is the <figure> that triggered the event.
+  function upDate(figureEl) {
+    var preview = document.getElementById("image");
+    var pic = figureEl.getElementsByTagName("img")[0];
+    preview.style.backgroundImage = "url('" + pic.src + "')";
+    preview.innerHTML = "<span>" + pic.alt + "</span>";
+    preview.className = "";
+  }
+
+  // Runs on mouseout and on blur.
+  // Puts the preview area back to its starting state.
+  function unDo() {
+    var preview = document.getElementById("image");
+    preview.style.backgroundImage = "none";
+    preview.innerHTML = "<span>Select an image below to display here.</span>";
+    preview.className = "empty";
+  }
+</script>
+
+</body>
+</html>
